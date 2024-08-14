@@ -46,7 +46,7 @@ TESTING=NO
 ;;
 trixie)
 OS_VERSION=13
-PYRA_ARCHIVE=bookworm
+PYRA_ARCHIVE=unstable
 TESTING=YES
 ;;
 forky)
@@ -111,11 +111,13 @@ mkdir -p "${DATA}/cache/debootstrap"
 mkdir -p "${DATA}/cache/apt"
 mkdir -p "${DATA}/keyrings"
 
+#No archive key for testing
 if [ "$TESTING" = "NO" ]; then
 curl -ffSL https://ftp-master.debian.org/keys/archive-key-$OS_VERSION.asc | sudo gpg --dearmor -o "${DATA}/keyrings/debian-archive-keyring-$OS_VERSION.gpg"
 fi
 
 #Build image 
+echo Testing Status: $TESTING
 if [ "$TESTING" = "NO" ]; then
 debootstrap --cache-dir="${DATA}"/cache/debootstrap --arch=armhf --keyring="${DATA}"/keyrings/debian-archive-keyring-$OS_VERSION.gpg --include=eatmydata,ca-certificates  "${OS}" "${ROOTFS}" http://deb.debian.org/debian
 else
@@ -182,8 +184,9 @@ cat > "${ROOTFS}"/etc/fstab << EOF
 # device; this may be used with UUID= as a more robust way to name devices
 # that works even if disks are added and removed. See fstab(5).
 #
+# / was f2fs initially
 # <file system> <mount point>   <type>  <options>       <dump>  <pass>
-PARTUUID=${ROOTPARTUUID}  /               ext2    defaults        0       1
+PARTUUID=${ROOTPARTUUID}  /               ext4    defaults        0       1
 PARTUUID=${BOOTPARTUUID}  /boot           ext4    defaults        0       1
 
 EOF
