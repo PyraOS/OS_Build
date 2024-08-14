@@ -9,43 +9,33 @@ check_exists sfdisk
 check_exists losetup
 check_exists dd
 check_exists mke2fs
-# check_exists mkfs.f2fs
+ check_exists mkfs.ext4
 check_exists debootstrap
 
 
 if [ "$#" -lt 3 ] ; then echo "Usage: $0 output.img imagesize packages ( $0 output.img 4G pyra-meta-mate )" ; exit 1; fi
 
-#modprobe f2fs as it'll error out when mounting
-# modprobe f2fs
 
 #Update binfmt, this only needs to be done on non ARM platforms
 update-binfmts --enable qemu-arm
 
 IMAGENAME="$1"
 IMAGESIZE="$2"
-# IMAGENAME="Pyra"
-# IMAGESIZE="4G"
 
-OS=trixie
-TESTING=1
+
+OS=testing
 
 # We only support buster and beyond, cover a few newer OSes
 case $OS in 
-buster)
-OS_VERSION=10
 
-;;
 bullseye)
 OS_VERSION=11
-PYRA_ARCHIVE=bullseye
 ;;
 bookworm)
 OS_VERSION=12
-PYRA_ARCHIVE=bookworm
 ;;
 trixie)
 OS_VERSION=13
-PYRA_ARCHIVE=unstable
 ;;
 forky)
 echo "Not supported yet"
@@ -54,13 +44,10 @@ exit
 ;;
 testing)
 echo "Testing Repo"
-
-PYRA_ARCHIVE=unstable
 ;;
 sid)
 ##Sid generally has no version number so let's just go to 50
 OS_VERSION=50
-PYRA_ARCHIVE=unstable
 ;;
 default)
 echo "Select a current OS"
@@ -72,7 +59,6 @@ esac
 ARCHIVE_KEY="https://ftp-master.debian.org/keys/archive-key-$OS_VERSION.asc"
 SECURITY_KEY="https://ftp-master.debian.org/keys/archive-key-$OS_VERSION-security.asc"
 
-echo OS VERSION IS: $OS_VERSION
 shift
 shift
 PACKAGES=$@
@@ -115,62 +101,31 @@ mkdir -p "${DATA}/cache/debootstrap"
 mkdir -p "${DATA}/cache/apt"
 mkdir -p "${DATA}/keyrings"
 mkdir -p "${ROOTFS}"/usr/share/keyrings
-#No archive key for testing
-if [ $TESTING -eq 0 ]; then
-curl -ffSL https://ftp-master.debian.org/keys/archive-key-$OS_VERSION.asc | sudo gpg --dearmor -o "${DATA}/keyrings/debian-archive-keyring-$OS_VERSION.gpg"
-fi
 
-#Build image 
-echo Testing Status: $TESTING
-if [ "$TESTING" -eq 0 ]; then
+#No debian archive keyrings for testing or unstable
+if [ "$OS" -ne testing ] || if [ "$OS" -ne unstable ]; then
+curl -ffSL https://ftp-master.debian.org/keys/archive-key-$OS_VERSION.asc | sudo gpg --dearmor -o "${DATA}/keyrings/debian-archive-keyring-$OS_VERSION.gpg"\
 debootstrap --cache-dir="${DATA}"/cache/debootstrap --arch=armhf --keyring="${DATA}"/keyrings/debian-archive-keyring-$OS_VERSION.gpg --include=eatmydata,ca-certificates  "${OS}" "${ROOTFS}" http://deb.debian.org/debian
+
 else
 debootstrap --cache-dir="${DATA}"/cache/debootstrap --arch=armhf --include=eatmydata,ca-certificates  "${OS}" "${ROOTFS}" http://deb.debian.org/debian
-fi 
+fi
+
 
 #Fetch the Pyra key, convert it to gpg (see apt-key deprecation)
- curl -fsSL https://packages.pyra-handheld.com/pyra-public.pgp | sudo gpg --dearmor -o "${ROOTFS}"/usr/share/keyrings/pyra-public.gpg
+curl -fsSL https://packages.pyra-handheld.com/pyra-public.pgp | sudo gpg --dearmor -o "${ROOTFS}"/usr/share/keyrings/pyra-public.gpg
 
-#Check if OS Version is greater than 11 or if sid mentioned in release file.
-# When bullseye goes out of support we can descope this 
-if [ "$TESTING" -eq 0 ]; then
 
-if [ "$OS_VERSION" -gt 11 ]; then
+## Add the Debian Repo 
 cat << EOF > "${ROOTFS}"/etc/apt/sources.list
-
-#Debian Main
+#Debian $OS
 deb http://deb.debian.org/debian/ $OS main contrib non-free non-free-firmware
 deb-src http://deb.debian.org/debian/ $OS main contrib non-free non-free-firmware
 EOF
 
-else
-cat << EOF > "${ROOTFS}"/etc/apt/sources.list
 
-#Debian Main
-deb http://deb.debian.org/debian/ $OS main contrib non-free 
-deb-src http://deb.debian.org/debian/ $OS main contrib non-free
-EOF
-
-fi
-
-elif [ "$TESTING" -eq 1 ]; then
-cat << EOF > "${ROOTFS}"/etc/apt/sources.list
-
-deb http://deb.debian.org/debian testing main contrib non-free non-free-firmware
-deb-src http://deb.debian.org/debian testing main contrib non-free non-free-firmware
-
-else
-cat << EOF > "${ROOTFS}"/etc/apt/sources.list
-deb http://deb.debian.org/debian unstable main contrib non-free non-free-firmware
-deb-src http://deb.debian.org/debian unstable main contrib non-free non-free-firmware
-fi 
-
-
-# Security Repo has changed in Bullseye and beyond. Security repo not used in sid or testing
-
-if [ "$TESTING" -eq 0 ]; then
-
-if [ "$OS_VERSION" -gt 10 ]; then
+#No security repo in Testing or Unstable.
+if [ "$OS" -ne testing ] || if [ $OS -ne unstable ]; then
 
 cat << EOF >> "${ROOTFS}"/etc/apt/sources.list
 
@@ -178,19 +133,15 @@ cat << EOF >> "${ROOTFS}"/etc/apt/sources.list
 deb http://security.debian.org/debian-security $OS-security main contrib non-free
 deb-src http://security.debian.org/debian-security $OS-security main
 EOF
-elif [ "$OS_VERSION" -lt 10 ]; then
-cat << EOF >> "${ROOTFS}"/etc/apt/sources.list
-
-# Security Repo
-deb http://security.debian.org/ $OS/updates main non-free contrib
-deb-src http://security.debian.org/ $OS/updates main non-free contrib
-EOF
 fi 
-fi
 
-
+if [ "$OS" -ne testing ] || if [ $OS -ne unstable ]; then
 cat << EOF >> "${ROOTFS}"/etc/apt/sources.list.d/pyra-packages.list
-deb [arch=armhf signed-by=/usr/share/keyrings/pyra-public.gpg] http://packages.pyra-handheld.com/ ${PYRA_ARCHIVE}/
+deb [arch=armhf signed-by=/usr/share/keyrings/pyra-public.gpg] http://packages.pyra-handheld.com/${OS}/
+EOF
+else
+cat << EOF >> "${ROOTFS}"/etc/apt/sources.list.d/pyra-packages.list
+deb [arch=armhf signed-by=/usr/share/keyrings/pyra-public.gpg] http://packages.pyra-handheld.com/unstable/
 EOF
 
 chmod +x "${DATA}"/config.sh
