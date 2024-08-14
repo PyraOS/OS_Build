@@ -42,10 +42,12 @@ PYRA_ARCHIVE=bullseye
 bookworm)
 OS_VERSION=12
 PYRA_ARCHIVE=bookworm
+TESTING=NO
 ;;
 trixie)
 OS_VERSION=13
 PYRA_ARCHIVE=bookworm
+TESTING=YES
 ;;
 forky)
 echo "Not supported yet"
@@ -108,11 +110,18 @@ mount "${PART_BOOT}" "${ROOTFS}"/boot
 mkdir -p "${DATA}/cache/debootstrap"
 mkdir -p "${DATA}/cache/apt"
 mkdir -p "${DATA}/keyrings"
+
+if [[ TESTING == "NO" ]]; then
 curl -ffSL https://ftp-master.debian.org/keys/archive-key-$OS_VERSION.asc | sudo gpg --dearmor -o "${DATA}/keyrings/debian-archive-keyring-$OS_VERSION.gpg"
+fi
 
 #Build image 
+if [[ TESTING == "NO" ]]; then
 debootstrap --cache-dir="${DATA}"/cache/debootstrap --arch=armhf --keyring="${DATA}"/keyrings/debian-archive-keyring-$OS_VERSION.gpg --include=eatmydata,ca-certificates  "${OS}" "${ROOTFS}" http://deb.debian.org/debian
- 
+else
+debootstrap --cache-dir="${DATA}"/cache/debootstrap --arch=armhf --include=eatmydata,ca-certificates  "${OS}" "${ROOTFS}" http://deb.debian.org/debian
+fi 
+
 #Fetch the Pyra key, convert it to gpg (see apt-key deprecation)
  curl -fsSL https://packages.pyra-handheld.com/pyra-public.pgp | sudo gpg --dearmor -o "${ROOTFS}"/usr/share/keyrings/pyra-public.gpg
 
