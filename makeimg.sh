@@ -27,7 +27,7 @@ IMAGESIZE="$2"
 # IMAGESIZE="4G"
 
 OS=trixie
-
+TESTING=0
 
 # We only support buster and beyond, cover a few newer OSes
 case $OS in 
@@ -42,18 +42,21 @@ PYRA_ARCHIVE=bullseye
 bookworm)
 OS_VERSION=12
 PYRA_ARCHIVE=bookworm
-TESTING=NO
 ;;
 trixie)
 OS_VERSION=13
 PYRA_ARCHIVE=unstable
-TESTING=YES
 ;;
 forky)
 echo "Not supported yet"
 OS_VERSION=14
 exit
 ;;
+testing)
+echo "Testing Repo"
+
+PYRA_ARCHIVE=unstable
+
 sid)
 ##Sid generally has no version number so let's just go to 50
 OS_VERSION=50
@@ -68,6 +71,7 @@ esac
 
 ARCHIVE_KEY="https://ftp-master.debian.org/keys/archive-key-$OS_VERSION.asc"
 SECURITY_KEY="https://ftp-master.debian.org/keys/archive-key-$OS_VERSION-security.asc"
+
 echo OS VERSION IS: $OS_VERSION
 shift
 shift
@@ -112,13 +116,13 @@ mkdir -p "${DATA}/cache/apt"
 mkdir -p "${DATA}/keyrings"
 
 #No archive key for testing
-if [ "$TESTING" = "NO" ]; then
+if [ $TESTING -eq 0 ]; then
 curl -ffSL https://ftp-master.debian.org/keys/archive-key-$OS_VERSION.asc | sudo gpg --dearmor -o "${DATA}/keyrings/debian-archive-keyring-$OS_VERSION.gpg"
 fi
 
 #Build image 
 echo Testing Status: $TESTING
-if [ "$TESTING" = "NO" ]; then
+if [ "$TESTING" -eq 0 ]; then
 debootstrap --cache-dir="${DATA}"/cache/debootstrap --arch=armhf --keyring="${DATA}"/keyrings/debian-archive-keyring-$OS_VERSION.gpg --include=eatmydata,ca-certificates  "${OS}" "${ROOTFS}" http://deb.debian.org/debian
 else
 debootstrap --cache-dir="${DATA}"/cache/debootstrap --arch=armhf --include=eatmydata,ca-certificates  "${OS}" "${ROOTFS}" http://deb.debian.org/debian
@@ -129,7 +133,7 @@ fi
 
 #Check if OS Version is greater than 11 or if sid mentioned in release file.
 # When bullseye goes out of support we can descope this 
-if [ "$TESTING" = "NO" ]; then
+if [ "$TESTING" -eq 0 ]; then
 
 if [ "$OS_VERSION" -gt 11 ]; then
 cat << EOF > "${ROOTFS}"/etc/apt/sources.list
@@ -148,15 +152,20 @@ deb-src http://deb.debian.org/debian/ $OS main contrib non-free
 EOF
 
 fi
-else
+
+elif [ "$TESTING" -eq 1 ]; then
 deb http://deb.debian.org/debian testing main contrib non-free non-free-firmware
 deb-src http://deb.debian.org/debian testing main contrib non-free non-free-firmware
+
+else
+deb http://deb.debian.org/debian unstable main contrib non-free non-free-firmware
+deb-src http://deb.debian.org/debian unstable main contrib non-free non-free-firmware
 fi 
 
 
 # Security Repo has changed in Bullseye and beyond. Security repo not used in sid or testing
 
-if [ "$TESTING" = "YES" ]; then
+if [ "$TESTING" -eq 0 ]; then
 
 if [ "$OS_VERSION" -gt 10 ]; then
 
