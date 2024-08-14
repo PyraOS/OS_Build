@@ -154,10 +154,13 @@ EOF
 fi
 
 elif [ "$TESTING" -eq 1 ]; then
+cat << EOF > "${ROOTFS}"/etc/apt/sources.list
+
 deb http://deb.debian.org/debian testing main contrib non-free non-free-firmware
 deb-src http://deb.debian.org/debian testing main contrib non-free non-free-firmware
 
 else
+cat << EOF > "${ROOTFS}"/etc/apt/sources.list
 deb http://deb.debian.org/debian unstable main contrib non-free non-free-firmware
 deb-src http://deb.debian.org/debian unstable main contrib non-free non-free-firmware
 fi 
