@@ -56,7 +56,7 @@ testing)
 echo "Testing Repo"
 
 PYRA_ARCHIVE=unstable
-
+;;
 sid)
 ##Sid generally has no version number so let's just go to 50
 OS_VERSION=50
