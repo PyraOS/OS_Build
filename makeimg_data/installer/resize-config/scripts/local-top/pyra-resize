@@ -1,0 +1,45 @@
+#!/bin/bash
+set +e
+
+PREREQS=""
+case $1 in
+    prereqs) echo "${PREREQS}"; exit 0;;
+esac
+dmesg -n 1
+setfont Lat15-Terminus24x12.psf.gz
+
+clear
+. /scripts/functions
+
+pyr_version=$(tr -d '\0' </proc/device-tree/model 2>/dev/null)
+read -a MEMINFO < /proc/meminfo
+RAM=$(expr ${MEMINFO[1]} / 1000000)
+echo "Pyra model : ${pyr_version}"
+echo "Ram: $RAM GB"
+
+#/bin/bash
+
+echo ----------------------------------------
+
+ROOTFS=$(mktemp -d)
+ROOT_PART=$(resolve_device $ROOT)
+ROOT_DEV="/dev/$(lsblk -no pkname "$ROOT_PART")"
+PART_NUM="$(echo "$ROOT_PART" | grep -o "[[:digit:]]*$")"
+
+mount $ROOT_PART $ROOTFS
+if test -f ${ROOTFS}/pyra-resize; then
+	echo -------------- RESIZE ------------
+    rm ${ROOTFS}/pyra-resize
+	umount $ROOTFS
+	echo ", +" | sfdisk -N $PART_NUM $ROOT_DEV
+	partprobe $ROOT_DEV
+	echo "Resizing...."
+	resize.f2fs $ROOT_PART > /dev/null
+	echo "Done."
+fi
+umount $ROOTFS
+
+
+read -p "Done. Press any key to poweroff" -n1 -s
+
+poweroff -f

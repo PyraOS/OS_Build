@@ -1,0 +1,103 @@
+#!/bin/bash
+set +e
+
+PREREQS=""
+case $1 in
+    prereqs) echo "${PREREQS}"; exit 0;;
+esac
+dmesg -n 1
+setfont Lat15-Terminus24x12.psf.gz
+
+clear
+. /scripts/functions
+
+pyr_version=$(tr -d '\0' </proc/device-tree/model 2>/dev/null)
+read -a MEMINFO < /proc/meminfo
+RAM=$(expr ${MEMINFO[1]} / 1000000)
+echo "Pyra model : ${pyr_version}"
+echo "Ram: $RAM GB"
+
+mkdir -p /media/sd1
+mount -r /dev/mmcblk3p1 /media/sd1
+
+IMAGE=$(find /media/ -maxdepth 2 -name "*.img.tar.zst" | head -n 1)
+
+if [ -z "$IMAGE" ] ; then
+    read -p "
+No image found. 
+
+
+Press any key to poweroff
+
+
+" -n1 -s
+
+#poweroff -f
+/bin/bash
+
+fi
+
+UBOOT=$(dirname ${IMAGE})/uboot
+DEST=/dev/mmcblk0
+ROOTFS=/tmp/emmc
+
+PART_BOOT=${DEST}p1
+PART_ROOTFS=${DEST}p2
+
+dd if=/dev/zero of=${DEST} bs=1M count=10
+partprobe ${DEST}
+dd if=${UBOOT}/MLO of=/dev/mmcblk0 count=1 seek=2 bs=128k
+dd if=${UBOOT}/u-boot.img of=/dev/mmcblk0 count=2 seek=1 bs=384k
+echo -e "1M,256M,0x83,* \n ,,0x83," | sfdisk $DEST
+partprobe ${DEST}
+mke2fs -q -L boot ${PART_BOOT}
+mkfs.f2fs -q -f -l rootfs ${PART_ROOTFS}
+sync
+mkdir -p ${ROOTFS}
+mount ${PART_ROOTFS} ${ROOTFS}
+mkdir -p ${ROOTFS}/boot
+mount ${PART_BOOT} ${ROOTFS}/boot
+
+echo "
+${UBOOT}
+
+
+Writing ${IMAGE} to eMMC"
+
+# busybox seems to overwrite tar, copied it as real-tar in the hook script
+pv -w 106 $IMAGE | zstd -d - | /usr/bin/real-tar --warning=no-timestamp --numeric-owner -xf - -C ${ROOTFS}
+sync
+
+. ${ROOTFS}/etc/default/pyra-extlinux
+OLDROOT=$( echo ${EXTLINUX_ROOT} | sed 's/root=//')
+ROOTPARTUUID=$(blkid -p $PART_ROOTFS -s PART_ENTRY_UUID -o value)
+BOOTPARTUUID=$(blkid -p $PART_BOOT -s PART_ENTRY_UUID -o value)
+
+cat > ${ROOTFS}/etc/fstab << EOF
+# /etc/fstab: static file system information.
+#
+# Use 'blkid' to print the universally uniqu+e identifier for a
+# device; this may be used with UUID= as a more robust way to name devices
+# that works even if disks are added and removed. See fstab(5).
+#
+# <file system> <mount point>   <type>  <options>       <dump>  <pass>
+PARTUUID=${ROOTPARTUUID}  /               f2fs    defaults        0       1
+PARTUUID=${BOOTPARTUUID}  /boot           ext4    defaults        0       1
+
+EOF
+
+sed -i "s/${OLDROOT}/PARTUUID=${ROOTPARTUUID}/" ${ROOTFS}/boot/extlinux/linux.cfg
+sed -i "s/${OLDROOT}/PARTUUID=${ROOTPARTUUID}/" ${ROOTFS}/etc/default/pyra-extlinux
+sync
+
+
+read -p "
+Done. 
+
+
+Press any key to poweroff
+
+
+" -n1 -s
+
+poweroff -f

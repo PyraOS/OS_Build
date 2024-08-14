@@ -1,0 +1,29 @@
+#!/bin/sh
+set -e
+
+PREREQS=""
+case $1 in
+    prereqs) echo "${PREREQS}"; exit 0;;
+esac
+
+. /usr/share/initramfs-tools/hook-functions
+
+##
+
+copy_exec /bin/setfont
+copy_file binary /usr/share/consolefonts/Lat15-Terminus24x12.psf.gz
+
+#installer
+copy_exec /sbin/sfdisk
+copy_exec /sbin/mkfs.ext4
+copy_exec /bin/lsblk
+copy_exec /sbin/mkfs.f2fs
+copy_exec /bin/lsblk
+copy_exec /usr/bin/pv
+copy_exec /bin/bash
+copy_exec /usr/sbin/parted
+copy_exec /usr/sbin/resize.f2fs
+copy_file script /usr/share/pyra/scripts/pyra-install.sh
+copy_file binary /usr/share/pyra/u-boot/pyra-u-boot-4g/MLO
+copy_file binary /usr/share/pyra/u-boot/pyra-u-boot-4g/u-boot.img
+
