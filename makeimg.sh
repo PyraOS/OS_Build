@@ -111,12 +111,12 @@ mkdir -p "${DATA}/cache/debootstrap"
 mkdir -p "${DATA}/cache/apt"
 mkdir -p "${DATA}/keyrings"
 
-if [ "$TESTING" == "NO" ]; then
+if [ "$TESTING" = "NO" ]; then
 curl -ffSL https://ftp-master.debian.org/keys/archive-key-$OS_VERSION.asc | sudo gpg --dearmor -o "${DATA}/keyrings/debian-archive-keyring-$OS_VERSION.gpg"
 fi
 
 #Build image 
-if [ "$TESTING" == "NO" ]; then
+if [ "$TESTING" = "NO" ]; then
 debootstrap --cache-dir="${DATA}"/cache/debootstrap --arch=armhf --keyring="${DATA}"/keyrings/debian-archive-keyring-$OS_VERSION.gpg --include=eatmydata,ca-certificates  "${OS}" "${ROOTFS}" http://deb.debian.org/debian
 else
 debootstrap --cache-dir="${DATA}"/cache/debootstrap --arch=armhf --include=eatmydata,ca-certificates  "${OS}" "${ROOTFS}" http://deb.debian.org/debian
