@@ -143,6 +143,7 @@ else
 cat << EOF >> "${ROOTFS}"/etc/apt/sources.list.d/pyra-packages.list
 deb [arch=armhf signed-by=/usr/share/keyrings/pyra-public.gpg] http://packages.pyra-handheld.com/unstable/
 EOF
+fi 
 
 chmod +x "${DATA}"/config.sh
 chmod +x "${DATA}"/settings.debconf
