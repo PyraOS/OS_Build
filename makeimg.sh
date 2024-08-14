@@ -114,7 +114,7 @@ mount "${PART_BOOT}" "${ROOTFS}"/boot
 mkdir -p "${DATA}/cache/debootstrap"
 mkdir -p "${DATA}/cache/apt"
 mkdir -p "${DATA}/keyrings"
-
+mkdir -p "${ROOTFS}"/usr/share/keyrings
 #No archive key for testing
 if [ $TESTING -eq 0 ]; then
 curl -ffSL https://ftp-master.debian.org/keys/archive-key-$OS_VERSION.asc | sudo gpg --dearmor -o "${DATA}/keyrings/debian-archive-keyring-$OS_VERSION.gpg"
@@ -188,7 +188,7 @@ EOF
 fi 
 fi
 
-mkdir -p "${ROOTFS}"/usr/share/keyrings
+
 cat << EOF >> "${ROOTFS}"/etc/apt/sources.list.d/pyra-packages.list
 deb [arch=armhf signed-by=/usr/share/keyrings/pyra-public.gpg] http://packages.pyra-handheld.com/ ${PYRA_ARCHIVE}/
 EOF
