@@ -98,7 +98,7 @@ dd if="${DATA}"/uboot/u-boot.img of="$LOOPDEV" count=2 seek=1 bs=384k conv=notru
 
 # Setup the Filesystem on partitions and mount
 mke2fs  -L boot "$PART_BOOT"
-mkfs.ext2  -O encrypt -L rootfs "$PART_ROOTFS"
+mkfs.ext4  -O encrypt -L rootfs "$PART_ROOTFS"
 
 ROOTFS=$(mktemp -d)
 mkdir -p "${ROOTFS}"
@@ -129,6 +129,8 @@ fi
 
 #Check if OS Version is greater than 11 or if sid mentioned in release file.
 # When bullseye goes out of support we can descope this 
+if [ "$TESTING" = "NO" ]; then
+
 if [ "$OS_VERSION" -gt 11 ]; then
 cat << EOF > "${ROOTFS}"/etc/apt/sources.list
 
@@ -146,8 +148,16 @@ deb-src http://deb.debian.org/debian/ $OS main contrib non-free
 EOF
 
 fi
+else
+deb http://deb.debian.org/debian testing main contrib non-free non-free-firmware
+deb-src http://deb.debian.org/debian testing main contrib non-free non-free-firmware
+fi 
+
 
 # Security Repo has changed in Bullseye and beyond. Security repo not used in sid or testing
+
+if [ "$TESTING" = "YES" ]; then
+
 if [ "$OS_VERSION" -gt 10 ]; then
 
 cat << EOF >> "${ROOTFS}"/etc/apt/sources.list
@@ -164,6 +174,7 @@ deb http://security.debian.org/ $OS/updates main non-free contrib
 deb-src http://security.debian.org/ $OS/updates main non-free contrib
 EOF
 fi 
+fi
 
 cat << EOF >> "${ROOTFS}"/etc/apt/sources.list.d/pyra-packages.list
 deb [arch=armhf signed-by=/usr/share/keyrings/pyra-public.gpg] http://packages.pyra-handheld.com/ ${PYRA_ARCHIVE}/
@@ -171,6 +182,7 @@ EOF
 
 chmod +x "${DATA}"/config.sh
 chmod +x "${DATA}"/settings.debconf
+
 cp "${DATA}"/config.sh "${ROOTFS}"/
 cp "${DATA}"/settings.debconf "${ROOTFS}"/settings.debconf
 
