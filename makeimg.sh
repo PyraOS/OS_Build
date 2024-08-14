@@ -188,6 +188,7 @@ EOF
 fi 
 fi
 
+mkdir -p "${ROOTFS}"/usr/share/keyrings
 cat << EOF >> "${ROOTFS}"/etc/apt/sources.list.d/pyra-packages.list
 deb [arch=armhf signed-by=/usr/share/keyrings/pyra-public.gpg] http://packages.pyra-handheld.com/ ${PYRA_ARCHIVE}/
 EOF
