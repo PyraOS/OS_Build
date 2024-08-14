@@ -26,7 +26,7 @@ IMAGESIZE="$2"
 # IMAGENAME="Pyra"
 # IMAGESIZE="4G"
 
-OS=bookworm
+OS=trixie
 
 
 # We only support buster and beyond, cover a few newer OSes
@@ -44,9 +44,8 @@ OS_VERSION=12
 PYRA_ARCHIVE=bookworm
 ;;
 trixie)
-echo "Not supported yet"
 OS_VERSION=13
-exit
+PYRA_ARCHIVE=bookworm
 ;;
 forky)
 echo "Not supported yet"
@@ -56,7 +55,7 @@ exit
 sid)
 ##Sid generally has no version number so let's just go to 50
 OS_VERSION=50
-PYRA_ARCHIVE=unstable # probably needs to be bookworm for now
+PYRA_ARCHIVE=unstable
 ;;
 default)
 echo "Select a current OS"
