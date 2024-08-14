@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Fetch apt repo
+        run: | 
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+          f2fs-tools \
+          util-linux \
+          git \
+          debootstrap \
+          systemd-container \
+          pv \
+          qemu-user-static \
+          binfmt-support \
+          initramfs-tools-core \
+          curl \
+          zstd \
+          fdisk
+      
+      - name: Run binfmt update
+        run: update-binfmts --enable qemu-arm
+      
+      - name: Run Makeimg
+        run: |
+          sudo ./make_all.sh pyra.img 4G pyra-meta-mate
+
+      - name: Upload Artifact
+        if: ${{ success() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: PyraOS SD Installer
+          path: pyra-install.img
