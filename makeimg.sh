@@ -27,7 +27,7 @@ IMAGESIZE="$2"
 # IMAGESIZE="4G"
 
 OS=trixie
-TESTING=0
+TESTING=1
 
 # We only support buster and beyond, cover a few newer OSes
 case $OS in 
@@ -104,7 +104,7 @@ dd if="${DATA}"/uboot/u-boot.img of="$LOOPDEV" count=2 seek=1 bs=384k conv=notru
 mke2fs  -L boot "$PART_BOOT"
 mkfs.ext4  -O encrypt -L rootfs "$PART_ROOTFS"
 
-ROOTFS=$(mktemp -d)
+ROOTFS=/tmp/ROOTFS
 mkdir -p "${ROOTFS}"
 mount "${PART_ROOTFS}" "${ROOTFS}"
 
