@@ -39,8 +39,8 @@ jobs:
       
       - name: Run Makeimg
         run: |
-        export OS=bookworm
-        sudo ./make_all.sh pyra.img 4G pyra-meta-mate
+          export OS=bookworm
+          sudo ./make_all.sh pyra.img 4G pyra-meta-mate
 
       - name: Upload Artifact
         if: ${{ success() }}
@@ -117,8 +117,8 @@ jobs:
       
       - name: Run Makeimg
         run: |
-        export OS=sid
-        sudo ./make_all.sh pyra.img 4G pyra-meta-mate
+          export OS=sid
+          sudo ./make_all.sh pyra.img 4G pyra-meta-mate
 
       - name: Upload Artifact
         if: ${{ success() }}
