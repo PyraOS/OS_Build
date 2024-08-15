@@ -40,7 +40,7 @@ jobs:
       - name: Run Makeimg
         run: |
           echo "OS=bookworm" >> $GITHUB_ENV
-          sudo ./make_all.sh pyra.img 4G pyra-meta-mate
+          sudo -E ./make_all.sh pyra.img 4G pyra-meta-mate
 
       - name: Upload Artifact
         if: ${{ success() }}
@@ -81,7 +81,7 @@ jobs:
           OS: testing
         run: |
           echo "OS=testing" >> $GITHUB_ENV
-          sudo ./make_all.sh pyra.img 4G pyra-meta-mate
+          sudo -E ./make_all.sh pyra.img 4G pyra-meta-mate
 
       - name: Upload Artifact
         if: ${{ success() }}
@@ -120,7 +120,7 @@ jobs:
       - name: Run Makeimg
         run: |
           echo "OS=sid" >> $GITHUB_ENV
-          sudo ./make_all.sh pyra.img 4G pyra-meta-mate
+          sudo -E ./make_all.sh pyra.img 4G pyra-meta-mate
 
       - name: Upload Artifact
         if: ${{ success() }}
