@@ -23,8 +23,6 @@ IMAGENAME="$1"
 IMAGESIZE="$2"
 
 
-OS=testing
-
 #Bullseye and beyond supported, we need the OS version to automate detection for testing and SID. OS version beyond 30 will trigger testing and unstable.
 case $OS in 
 
@@ -50,7 +48,9 @@ sid)
 OS_VERSION=50
 ;;
 default)
-echo "Select a current OS"
+## Failsafe
+OS=bookworm
+OS_VERSION=12
 exit
 ;;
 
