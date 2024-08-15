@@ -10,7 +10,7 @@ export DEBIAN_FRONTEND DEBCONF_NONINTERACTIVE_SEEN
 debconf-set-selections /settings.debconf
 
 echo "force-unsafe-io" > /etc/dpkg/dpkg.cfg.d/02apt-speedup
-modprobe f2fs 
+# modprobe f2fs 
 
 eatmydata apt update -y
 eatmydata apt -o APT::Keep-Downloaded-Packages="true" upgrade -y 
