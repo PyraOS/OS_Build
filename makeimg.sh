@@ -103,7 +103,7 @@ mkdir -p "${DATA}/keyrings"
 mkdir -p "${ROOTFS}"/usr/share/keyrings
 
 #No debian archive keyrings for testing or unstable
-if [ "$OS_SVERSION" -le 30 ]; then
+if [ "$OS_VERSION" -le 30 ]; then
 curl -ffSL https://ftp-master.debian.org/keys/archive-key-$OS_VERSION.asc | sudo gpg --dearmor -o "${DATA}/keyrings/debian-archive-keyring-$OS_VERSION.gpg"\
 debootstrap --cache-dir="${DATA}"/cache/debootstrap --arch=armhf --keyring="${DATA}"/keyrings/debian-archive-keyring-$OS_VERSION.gpg --include=eatmydata,ca-certificates  "${OS}" "${ROOTFS}" http://deb.debian.org/debian
 
@@ -125,7 +125,7 @@ EOF
 
 
 #No security repo in Testing or Unstable.
-if [ "$OS_SVERSION" -le 30 ]; then
+if [ "$OS_VERSION" -le 30 ]; then
 
 cat << EOF >> "${ROOTFS}"/etc/apt/sources.list
 
@@ -136,7 +136,7 @@ EOF
 fi 
 
 # Pyra Packages Repo
-if [ "$OS_SVERSION" -le 30 ]; then
+if [ "$OS_VERSION" -le 30 ]; then
 cat << EOF >> "${ROOTFS}"/etc/apt/sources.list.d/pyra-packages.list
 deb [arch=armhf signed-by=/usr/share/keyrings/pyra-public.gpg] http://packages.pyra-handheld.com/${OS}/
 EOF
