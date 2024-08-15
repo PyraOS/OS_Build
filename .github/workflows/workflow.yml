@@ -41,7 +41,6 @@ jobs:
         env:
           OS: bookworm
         run: |
-          export OS=bookworm
           sudo ./make_all.sh pyra.img 4G pyra-meta-mate
 
       - name: Upload Artifact
