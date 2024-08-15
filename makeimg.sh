@@ -22,7 +22,7 @@ update-binfmts --enable qemu-arm
 IMAGENAME="$1"
 IMAGESIZE="$2"
 
-
+OS=$OS
 #Bullseye and beyond supported, we need the OS version to automate detection for testing and SID. OS version beyond 30 will trigger testing and unstable.
 case $OS in 
 
