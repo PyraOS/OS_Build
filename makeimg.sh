@@ -56,6 +56,11 @@ exit
 
 esac
 
+echo "OS Name: ${OS}"
+echo "OS Version: ${OS_VERSION}. Note for sid and testing it is 50"
+
+
+
 ARCHIVE_KEY="https://ftp-master.debian.org/keys/archive-key-$OS_VERSION.asc"
 SECURITY_KEY="https://ftp-master.debian.org/keys/archive-key-$OS_VERSION-security.asc"
 
