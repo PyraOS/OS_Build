@@ -25,7 +25,7 @@ IMAGESIZE="$2"
 
 OS=testing
 
-# We only support buster and beyond, cover a few newer OSes
+#Bullseye and beyond supported, we need the OS version to automate detection for testing and SID. OS version beyond 30 will trigger testing and unstable.
 case $OS in 
 
 bullseye)
@@ -43,7 +43,7 @@ OS_VERSION=14
 exit
 ;;
 testing)
-echo "Testing Repo"
+OS_VERSION=50
 ;;
 sid)
 ##Sid generally has no version number so let's just go to 50
@@ -103,7 +103,7 @@ mkdir -p "${DATA}/keyrings"
 mkdir -p "${ROOTFS}"/usr/share/keyrings
 
 #No debian archive keyrings for testing or unstable
-if [ "$OS" -ne testing ] || [ "$OS" -ne unstable ]; then
+if [ "$OS_SVERSION" -le 30 ]; then
 curl -ffSL https://ftp-master.debian.org/keys/archive-key-$OS_VERSION.asc | sudo gpg --dearmor -o "${DATA}/keyrings/debian-archive-keyring-$OS_VERSION.gpg"\
 debootstrap --cache-dir="${DATA}"/cache/debootstrap --arch=armhf --keyring="${DATA}"/keyrings/debian-archive-keyring-$OS_VERSION.gpg --include=eatmydata,ca-certificates  "${OS}" "${ROOTFS}" http://deb.debian.org/debian
 
@@ -125,7 +125,7 @@ EOF
 
 
 #No security repo in Testing or Unstable.
-if [ "$OS" -ne testing ] || [ $OS -ne unstable ]; then
+if [ "$OS_SVERSION" -le 30 ]; then
 
 cat << EOF >> "${ROOTFS}"/etc/apt/sources.list
 
@@ -136,7 +136,7 @@ EOF
 fi 
 
 # Pyra Packages Repo
-if [ "$OS" -ne testing ] || [ $OS -ne unstable ]; then
+if [ "$OS_SVERSION" -le 30 ]; then
 cat << EOF >> "${ROOTFS}"/etc/apt/sources.list.d/pyra-packages.list
 deb [arch=armhf signed-by=/usr/share/keyrings/pyra-public.gpg] http://packages.pyra-handheld.com/${OS}/
 EOF
