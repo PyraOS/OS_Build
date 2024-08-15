@@ -37,15 +37,12 @@ jobs:
       - name: Run binfmt update
         run: update-binfmts --enable qemu-arm
       
-      - name: Set the OS Release
-        run: |
-          echo "OS=bookworm" >> $GITHUB_ENV
-
-      
       - name: Run Makeimg
+        env:
+          OS: bookworm
         run: |
-
-          sudo ./make_all.sh pyra.img 4G pyra-meta-mate
+          echo "OS=boomworm" >> $GITHUB_ENV
+          sudo -E ./make_all.sh pyra.img 4G pyra-meta-mate
 
       - name: Upload Artifact
         if: ${{ success() }}
@@ -123,10 +120,11 @@ jobs:
         run: update-binfmts --enable qemu-arm
       
       - name: Run Makeimg
+        env:
+          OS: sid
         run: |
           echo "OS=sid" >> $GITHUB_ENV
           sudo -E ./make_all.sh pyra.img 4G pyra-meta-mate
-
       - name: Upload Artifact
         if: ${{ success() }}
         uses: actions/upload-artifact@v4
