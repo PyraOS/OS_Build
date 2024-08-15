@@ -38,6 +38,8 @@ jobs:
         run: update-binfmts --enable qemu-arm
       
       - name: Run Makeimg
+        env:
+          OS: bookworm
         run: |
           export OS=bookworm
           sudo ./make_all.sh pyra.img 4G pyra-meta-mate
@@ -77,6 +79,8 @@ jobs:
         run: update-binfmts --enable qemu-arm
       
       - name: Run Makeimg
+        env:
+          OS: testing
         run: |
           export OS=testing
           sudo ./make_all.sh pyra.img 4G pyra-meta-mate
@@ -116,8 +120,9 @@ jobs:
         run: update-binfmts --enable qemu-arm
       
       - name: Run Makeimg
+        env: 
+          OS: sid
         run: |
-          export OS=sid
           sudo ./make_all.sh pyra.img 4G pyra-meta-mate
 
       - name: Upload Artifact
