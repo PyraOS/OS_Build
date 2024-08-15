@@ -102,7 +102,7 @@ mkdir -p "${DATA}/cache/apt"
 mkdir -p "${DATA}/keyrings"
 mkdir -p "${ROOTFS}"/usr/share/keyrings
 
-#No debian archive keyrings for testing or unstable
+echo "Setup Keyrings and debootstrap"
 if [ "$OS_VERSION" -le 30 ]; then
 curl -ffSL https://ftp-master.debian.org/keys/archive-key-$OS_VERSION.asc | sudo gpg --dearmor -o "${DATA}/keyrings/debian-archive-keyring-$OS_VERSION.gpg"\
 debootstrap --cache-dir="${DATA}"/cache/debootstrap --arch=armhf --keyring="${DATA}"/keyrings/debian-archive-keyring-$OS_VERSION.gpg --include=eatmydata,ca-certificates  "${OS}" "${ROOTFS}" http://deb.debian.org/debian
@@ -115,8 +115,8 @@ fi
 #Fetch the Pyra key, convert it to gpg (see apt-key deprecation)
 curl -fsSL https://packages.pyra-handheld.com/pyra-public.pgp | sudo gpg --dearmor -o "${ROOTFS}"/usr/share/keyrings/pyra-public.gpg
 
+echo "Setup Source Repos"
 
-## Add the Debian Repo 
 cat << EOF > "${ROOTFS}"/etc/apt/sources.list
 #Debian $OS
 deb http://deb.debian.org/debian/ $OS main contrib non-free non-free-firmware
@@ -146,12 +146,15 @@ deb [arch=armhf signed-by=/usr/share/keyrings/pyra-public.gpg] http://packages.p
 EOF
 fi 
 
+echo "Copy config and settings to rootfs for execution later"
 chmod +x "${DATA}"/config.sh
 chmod +x "${DATA}"/settings.debconf
 
 cp "${DATA}"/config.sh "${ROOTFS}"/
 cp "${DATA}"/settings.debconf "${ROOTFS}"/settings.debconf
 
+
+echo "Setup fstab"
 ROOTPARTUUID=$(blkid -p "$PART_ROOTFS" -s PART_ENTRY_UUID -o value)
 BOOTPARTUUID=$(blkid -p "$PART_BOOT" -s PART_ENTRY_UUID -o value)
 
@@ -171,6 +174,8 @@ EOF
 
 
 rm "${ROOTFS}"/var/cache/apt/* -rf
+
+echo "Run NSpawn"
 # This step requires armHF so we use qemu-arm-static to build
 systemd-nspawn  --bind="${DATA}"/installer:/installer --bind="${DATA}"/cache/apt:/var/cache/apt -D "${ROOTFS}" -a /config.sh "${PACKAGES}"
 
