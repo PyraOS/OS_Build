@@ -24,7 +24,6 @@ IMAGESIZE="$2"
 
 #Bullseye and beyond supported, we need the OS version to automate detection for testing and SID. OS version beyond 30 will trigger testing and unstable.
 case $OS in 
-
 bullseye)
 OS_VERSION=11
 ;;
@@ -57,7 +56,6 @@ esac
 
 echo "OS Name: ${OS}"
 echo "OS Version: ${OS_VERSION}. Note for sid and testing it is 50"
-
 
 
 ARCHIVE_KEY="https://ftp-master.debian.org/keys/archive-key-$OS_VERSION.asc"
@@ -140,13 +138,14 @@ EOF
 fi 
 
 # Pyra Packages Repo
+# Unstable repo seems a bit stale, let's try bookworm instead for testing
 if [ "$OS_VERSION" -le 30 ]; then
 cat << EOF >> "${ROOTFS}"/etc/apt/sources.list.d/pyra-packages.list
 deb [arch=armhf signed-by=/usr/share/keyrings/pyra-public.gpg] http://packages.pyra-handheld.com/ $OS/
 EOF
 else
 cat << EOF >> "${ROOTFS}"/etc/apt/sources.list.d/pyra-packages.list
-deb [arch=armhf signed-by=/usr/share/keyrings/pyra-public.gpg] http://packages.pyra-handheld.com/ unstable/
+deb [arch=armhf signed-by=/usr/share/keyrings/pyra-public.gpg] http://packages.pyra-handheld.com/ bookmworm/
 EOF
 fi 
 
