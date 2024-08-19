@@ -83,7 +83,7 @@ jobs:
           OS: testing
         run: |
           echo "OS=testing" >> $GITHUB_ENV
-          sudo -E ./make_all.sh pyra-testing.img 4G pyra-meta-mate
+          sudo -E ./make_all.sh pyra-testing.img 4G pyra-meta-base
 
       - name: Upload Artifact
         if: ${{ success() }}
@@ -124,7 +124,7 @@ jobs:
           OS: sid
         run: |
           echo "OS=sid" >> $GITHUB_ENV
-          sudo -E ./make_all.sh pyra-sid.img 4G pyra-meta-mate
+          sudo -E ./make_all.sh pyra-sid.img 4G pyra-meta-base
       - name: Upload Artifact
         if: ${{ success() }}
         uses: actions/upload-artifact@v4
