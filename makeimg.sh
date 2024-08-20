@@ -139,6 +139,10 @@ deb-src http://security.debian.org/debian-security $OS-security main
 EOF
 fi 
 
+# Add Temporary repo keys
+gpg --keyserver keyserver.ubuntu.com --recv-keys B9CB5B9FA32E2FAE
+gpg --export --armor B9CB5B9FA32E2FAE | sudo tee /etc/apt/trusted.gpg.d/slater_au.asc
+
 # Pyra Packages Repo
 if [ "$OS_VERSION" -le 30 ]; then
 cat << EOF >> "${ROOTFS}"/etc/apt/sources.list.d/pyra-packages.list
