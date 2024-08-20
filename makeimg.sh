@@ -142,12 +142,13 @@ fi
 # Pyra Packages Repo
 if [ "$OS_VERSION" -le 30 ]; then
 cat << EOF >> "${ROOTFS}"/etc/apt/sources.list.d/pyra-packages.list
-# deb [arch=armhf signed-by=/usr/share/keyrings/pyra-public.gpg] http://packages.pyra-handheld.com/ $OS/
-deb [arch=armhf trusted=yes] http://slater.au bookworm/
+deb [arch=armhf signed-by=/usr/share/keyrings/pyra-public.gpg] http://slater.au bookworm/
+# deb [arch=armhf trusted=yes] http://slater.au bookworm/
 EOF
 else
 cat << EOF >> "${ROOTFS}"/etc/apt/sources.list.d/pyra-packages.list
-deb [arch=armhf trusted=yes] http://slater.au bookworm/
+deb [arch=armhf signed-by=/usr/share/keyrings/pyra-public.gpg] http://slater.au bookworm/
+# deb [arch=armhf trusted=yes] http://slater.au bookworm/
 EOF
 fi 
 
