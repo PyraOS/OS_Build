@@ -34,9 +34,6 @@ jobs:
           zstd \
           fdisk
       
-      - name: Run binfmt update
-        run: update-binfmts --enable qemu-arm
-      
       - name: Run Makeimg
         env:
           OS: bookworm
@@ -75,9 +72,6 @@ jobs:
           zstd \
           fdisk
       
-      - name: Run binfmt update
-        run: update-binfmts --enable qemu-arm
-      
       - name: Run Makeimg
         env:
           OS: testing
@@ -115,9 +109,6 @@ jobs:
           curl \
           zstd \
           fdisk
-      
-      - name: Run binfmt update
-        run: update-binfmts --enable qemu-arm
       
       - name: Run Makeimg
         env:

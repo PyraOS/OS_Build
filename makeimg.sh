@@ -126,7 +126,7 @@ cat << EOF > "${ROOTFS}"/etc/apt/sources.list
 deb http://deb.debian.org/debian/ $OS main contrib non-free non-free-firmware
 deb-src http://deb.debian.org/debian/ $OS main contrib non-free non-free-firmware
 EOF
-
+``
 
 #No security repo in Testing or Unstable.
 if [ "$OS_VERSION" -le 30 ]; then
@@ -142,12 +142,12 @@ fi
 # Pyra Packages Repo
 if [ "$OS_VERSION" -le 30 ]; then
 cat << EOF >> "${ROOTFS}"/etc/apt/sources.list.d/pyra-packages.list
-deb [arch=armhf signed-by=/usr/share/keyrings/pyra-public.gpg] http://slater.au bookworm
+deb [arch=armhf signed-by=/usr/share/keyrings/pyra-public.gpg] http://slater.au bookworm/
 # deb [arch=armhf trusted=yes] http://slater.au bookworm/
 EOF
 else
 cat << EOF >> "${ROOTFS}"/etc/apt/sources.list.d/pyra-packages.list
-deb [arch=armhf signed-by=/usr/share/keyrings/pyra-public.gpg] http://slater.au bookworm
+deb [arch=armhf signed-by=/usr/share/keyrings/pyra-public.gpg] http://slater.au bookworm/
 # deb [arch=armhf trusted=yes] http://slater.au bookworm/
 EOF
 fi 
