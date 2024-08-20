@@ -147,7 +147,7 @@ deb [arch=armhf signed-by=/usr/share/keyrings/pyra-public.gpg] http://slater.au 
 EOF
 else
 cat << EOF >> "${ROOTFS}"/etc/apt/sources.list.d/pyra-packages.list
-deb [arch=armhf signed-by=/usr/share/keyrings/pyra-public.gpg] http://slater.au testing/
+deb [arch=armhf signed-by=/usr/share/keyrings/pyra-public.gpg] http://slater.au bookworm/
 EOF
 fi 
 
