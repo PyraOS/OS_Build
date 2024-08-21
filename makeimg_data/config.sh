@@ -14,7 +14,7 @@ echo "force-unsafe-io" > /etc/dpkg/dpkg.cfg.d/02apt-speedup
 
 eatmydata apt update -y
 # eatmydata apt -o APT::Keep-Downloaded-Packages="true" upgrade -y 
-eatmydata apt -o APT::Install-Recommends="false" -o APT::Keep-Downloaded-Packages="true" -o APT::Acquire::AllowInsecureRepositories=true install -y $@
+eatmydata apt -o APT::Install-Recommends="false" -o APT::Keep-Downloaded-Packages="true" install -y $@
 eatmydata apt -o APT::Keep-Downloaded-Packages="true" install -y $@
 
 mkdir -p /boot/dtb
