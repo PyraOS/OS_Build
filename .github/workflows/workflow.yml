@@ -45,7 +45,7 @@ jobs:
         if: ${{ success() }}
         uses: actions/upload-artifact@v4
         with:
-          name: PyraOS SD Installer
+          name: PyraOS SD Installer (Stable)
           path: pyra-stable-install.img
 
   testing:
@@ -83,8 +83,8 @@ jobs:
         if: ${{ success() }}
         uses: actions/upload-artifact@v4
         with:
-          name: PyraOS SD Installer
-          path: pyra-testing-install.img
+          name: PyraOS SD Installer (Testing)
+          path: pyra-testing-install.img.zip
 
   sid:
     runs-on: ubuntu-24.04
@@ -120,5 +120,5 @@ jobs:
         if: ${{ success() }}
         uses: actions/upload-artifact@v4
         with:
-          name: PyraOS SD Installer
+          name: PyraOS SD Installer (Sid)
           path: pyra-sid-install.img
