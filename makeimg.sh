@@ -120,7 +120,6 @@ fi
 
 curl -fsSL https://packages.pyra-handheld.com/pyra-public.pgp | sudo gpg --dearmor -o "${ROOTFS}"/usr/share/keyrings/pyra-public.gpg
 
-# wget -O  "${ROOTFS}"/usr/share/keyrings/pyra-public.gpg http://slater.au/bookworm/Release.gpg 
 echo "Setup Source Repos"
 
 cat << EOF > "${ROOTFS}"/etc/apt/sources.list
