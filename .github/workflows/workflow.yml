@@ -84,7 +84,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: PyraOS SD Installer (Testing)
-          path: pyra-testing-install.img.zip
+          path: pyra-testing-install.img
 
   sid:
     runs-on: ubuntu-24.04
