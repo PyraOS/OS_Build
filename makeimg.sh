@@ -94,7 +94,7 @@ dd if="${DATA}"/uboot/u-boot.img of="$LOOPDEV" count=2 seek=1 bs=384k conv=notru
 mke2fs  -L boot "$PART_BOOT"
 mkfs.ext4  -O encrypt -L rootfs "$PART_ROOTFS"
 
-ROOTFS=ROOTFS
+ROOTFS=/tmp/ROOTFS
 mkdir -p "${ROOTFS}"
 mount "${PART_ROOTFS}" "${ROOTFS}"
 
