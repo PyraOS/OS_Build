@@ -94,7 +94,7 @@ dd if="${DATA}"/uboot/u-boot.img of="$LOOPDEV" count=2 seek=1 bs=384k conv=notru
 mke2fs  -L boot "$PART_BOOT"
 mkfs.ext4  -O encrypt -L rootfs "$PART_ROOTFS"
 
-ROOTFS=/tmp/ROOTFS
+ROOTFS=ROOTFS
 mkdir -p "${ROOTFS}"
 mount "${PART_ROOTFS}" "${ROOTFS}"
 
@@ -172,9 +172,8 @@ cat > "${ROOTFS}"/etc/fstab << EOF
 # device; this may be used with UUID= as a more robust way to name devices
 # that works even if disks are added and removed. See fstab(5).
 #
-# / was f2fs initially
 # <file system> <mount point>   <type>  <options>       <dump>  <pass>
-PARTUUID=${ROOTPARTUUID}  /               ext4    defaults        0       1
+PARTUUID=${ROOTPARTUUID}  /               ext2    defaults        0       1
 PARTUUID=${BOOTPARTUUID}  /boot           ext4    defaults        0       1
 
 EOF
@@ -185,7 +184,6 @@ rm "${ROOTFS}"/var/cache/apt/* -rf
 echo "Run NSpawn"
 # This step requires armHF so we use qemu-arm-static to build
 systemd-nspawn  --bind="${DATA}"/installer:/installer --bind="${DATA}"/cache/apt:/var/cache/apt -D "${ROOTFS}" -a /config.sh "${PACKAGES}"
-
 #######################################################
 #Cleanup and Build Image
 
@@ -205,6 +203,6 @@ sync
 
 umount "${ROOTFS}/boot"
 umount "${ROOTFS}"
-rm "${ROOTFS}" -rf
+# rm "${ROOTFS}" -rf
 losetup -d "${LOOPDEV}"
 echo Done
