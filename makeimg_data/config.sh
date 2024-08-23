@@ -10,11 +10,10 @@ export DEBIAN_FRONTEND DEBCONF_NONINTERACTIVE_SEEN
 debconf-set-selections /settings.debconf
 
 echo "force-unsafe-io" > /etc/dpkg/dpkg.cfg.d/02apt-speedup
-# modprobe f2fs 
 
 eatmydata apt update -y
 eatmydata apt -o APT::Keep-Downloaded-Packages="true" upgrade -y 
-# eatmydata apt -o APT::Install-Recommends="false" -o APT::Keep-Downloaded-Packages="true" install -y $@
+#eatmydata apt -o APT::Install-Recommends="false" -o APT::Keep-Downloaded-Packages="true" install -y $@
 eatmydata apt -o APT::Keep-Downloaded-Packages="true" install -y $@
 
 mkdir -p /boot/dtb
