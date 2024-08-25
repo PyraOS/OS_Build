@@ -32,6 +32,7 @@ jobs:
           initramfs-tools-core \
           curl \
           zstd \
+          qemu-system-arm \
           fdisk
       
       - name: Run Makeimg
