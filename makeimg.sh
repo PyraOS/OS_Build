@@ -140,16 +140,14 @@ deb-src http://security.debian.org/debian-security $OS-security main
 EOF
 fi 
 
-# Pyra Packages Repo
+# Pyra Packages Repo(s)
 if [ "$OS_VERSION" -le 30 ]; then
 cat << EOF >> "${ROOTFS}"/etc/apt/sources.list.d/pyra-packages.list
-deb [arch=armhf signed-by=/usr/share/keyrings/pyra-public.gpg] http://slater.au bookworm/
-# deb [arch=armhf trusted=yes] http://slater.au bookworm/
+deb [arch=armhf signed-by=/usr/share/keyrings/pyra-public.gpg] http://slater.au/pyra bookworm/
 EOF
 else
 cat << EOF >> "${ROOTFS}"/etc/apt/sources.list.d/pyra-packages.list
-deb [arch=armhf signed-by=/usr/share/keyrings/pyra-public.gpg] http://slater.au bookworm/
-# deb [arch=armhf trusted=yes] http://slater.au bookworm/
+deb [arch=armhf signed-by=/usr/share/keyrings/pyra-public.gpg] http://slater.au/pyra testing/
 EOF
 fi 
 
@@ -174,7 +172,7 @@ cat > "${ROOTFS}"/etc/fstab << EOF
 #
 # / was f2fs initially
 # <file system> <mount point>   <type>  <options>       <dump>  <pass>
-PARTUUID=${ROOTPARTUUID}  /               ext4    defaults        0       1
+PARTUUID=${ROOTPARTUUID}  /               ext2    defaults        0       1
 PARTUUID=${BOOTPARTUUID}  /boot           ext4    defaults        0       1
 
 EOF
@@ -186,7 +184,6 @@ echo "Run NSpawn"
 # This step requires armHF so we use qemu-arm-static to build
 systemd-nspawn  --bind="${DATA}"/installer:/installer --bind="${DATA}"/cache/apt:/var/cache/apt -D "${ROOTFS}" -a /config.sh "${PACKAGES}"
 
-#######################################################
 #Cleanup and Build Image
 
 rm "${ROOTFS}"/config.sh
