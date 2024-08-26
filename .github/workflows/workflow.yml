@@ -59,7 +59,7 @@ jobs:
           OS: bookworm
         run: |
           echo "OS=boomworm" >> $GITHUB_ENV
-          docker run --rm --platform linux/arm/v7 \
+          docker run --rm --privileged --platform linux/arm/v7 \
             -v ${{ github.workspace }}:/workspace \
             -w /workspace \
             wally4000/pyrabuild:latest \
