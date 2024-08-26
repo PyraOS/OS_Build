@@ -26,28 +26,23 @@ IMAGESIZE="$2"
 case $OS in 
 
 bullseye)
+##oldstable
 OS_VERSION=11
 ;;
 bookworm)
+#stable
 OS_VERSION=12
 ;;
 trixie)
+#testing
 OS_VERSION=13
 ;;
-forky)
-echo "Not supported yet"
-OS_VERSION=14
-exit
-;;
-testing)
-OS_VERSION=50
-;;
 sid)
-##Sid generally has no version number so let's just go to 50
-OS_VERSION=50
+#unstable
+OS_VERSION=99
 ;;
 default)
-## Failsafe
+## Default to stable
 OS=bookworm
 OS_VERSION=12
 exit
@@ -56,12 +51,7 @@ exit
 esac
 
 echo "OS Name: ${OS}"
-echo "OS Version: ${OS_VERSION}. Note for sid and testing it is 50"
-
-
-
-ARCHIVE_KEY="https://ftp-master.debian.org/keys/archive-key-$OS_VERSION.asc"
-SECURITY_KEY="https://ftp-master.debian.org/keys/archive-key-$OS_VERSION-security.asc"
+echo "OS Version: ${OS_VERSION}"
 
 shift
 shift
@@ -107,7 +97,8 @@ mkdir -p "${DATA}/keyrings"
 mkdir -p "${ROOTFS}"/usr/share/keyrings
 
 echo "Setup Keyrings and debootstrap"
-if [ "$OS_VERSION" -le 30 ]; then
+## Need 
+if [ "$OS_VERSION" -le 90 ]; then
 curl -ffSL https://ftp-master.debian.org/keys/archive-key-$OS_VERSION.asc | sudo gpg --dearmor -o "${DATA}/keyrings/debian-archive-keyring-$OS_VERSION.gpg"
 debootstrap --cache-dir="${DATA}"/cache/debootstrap --arch=armhf --keyring="${DATA}"/keyrings/debian-archive-keyring-$OS_VERSION.gpg --include=eatmydata,ca-certificates  "${OS}" "${ROOTFS}" http://deb.debian.org/debian
 
@@ -115,11 +106,11 @@ else
 debootstrap --cache-dir="${DATA}"/cache/debootstrap --arch=armhf --include=eatmydata,ca-certificates  "${OS}" "${ROOTFS}" http://deb.debian.org/debian
 fi
 
-
 #Fetch the Pyra key, convert it to gpg (see apt-key deprecation)
 
 # curl -fsSL https://packages.pyra-handheld.com/pyra-public.pgp | sudo gpg --dearmor -o "${ROOTFS}"/usr/share/keyrings/pyra-public.gpg
-curl -fsSL http://slater.au/pyra/pyra.gpg | sudo gpg --dearmor -o "${ROOTFS}"/usr/share/keyrings/pyra-public.gpg        
+curl -fsSL http://slater.au/pyra/pyra.gpg | sudo gpg --dearmor -o "${ROOTFS}"/usr/share/keyrings/pyra-public.gpg       
+ 
 echo "Setup Source Repos"
 
 cat << EOF > "${ROOTFS}"/etc/apt/sources.list
@@ -130,7 +121,7 @@ EOF
 ``
 
 #No security repo in Testing or Unstable.
-if [ "$OS_VERSION" -le 30 ]; then
+if [ ! "OS" == "unstable" || ! "$OS" == "testing" ]; then
 
 cat << EOF >> "${ROOTFS}"/etc/apt/sources.list
 
@@ -141,15 +132,9 @@ EOF
 fi 
 
 # Pyra Packages Repo(s)
-if [ "$OS_VERSION" -le 30 ]; then
 cat << EOF >> "${ROOTFS}"/etc/apt/sources.list.d/pyra-packages.list
-deb [arch=armhf signed-by=/usr/share/keyrings/pyra-public.gpg] http://slater.au/ bookworm/
+deb [arch=armhf signed-by=/usr/share/keyrings/pyra-public.gpg] http://slater.au/pyra $OS main
 EOF
-else
-cat << EOF >> "${ROOTFS}"/etc/apt/sources.list.d/pyra-packages.list
-deb [arch=armhf signed-by=/usr/share/keyrings/pyra-public.gpg] http://slater.au/pyra testing/
-EOF
-fi 
 
 echo "Copy config and settings to rootfs for execution later"
 chmod +x "${DATA}"/config.sh
