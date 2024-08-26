@@ -97,13 +97,9 @@ mkdir -p "${DATA}/keyrings"
 mkdir -p "${ROOTFS}"/usr/share/keyrings
 
 echo "Setup Keyrings and debootstrap"
-## Need 
-if [ "$OS" != "unstable" ] || [ "$OS" != "testing" ]; then
+
 curl -ffSL https://ftp-master.debian.org/keys/archive-key-$OS_VERSION.asc | sudo gpg --dearmor -o "${DATA}/keyrings/debian-archive-keyring-$OS_VERSION.gpg"
 debootstrap --cache-dir="${DATA}"/cache/debootstrap --arch=armhf --keyring="${DATA}"/keyrings/debian-archive-keyring-$OS_VERSION.gpg --include=eatmydata,ca-certificates  "${OS}" "${ROOTFS}" http://deb.debian.org/debian
-else
-debootstrap --cache-dir="${DATA}"/cache/debootstrap --arch=armhf --include=eatmydata,ca-certificates  "${OS}" "${ROOTFS}" http://deb.debian.org/debian
-fi
 
 #Fetch the Pyra key, convert it to gpg (see apt-key deprecation)
 
