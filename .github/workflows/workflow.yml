@@ -48,7 +48,7 @@ jobs:
           OS: bookworm
         run: |
           echo "OS=boomworm" >> $GITHUB_ENV
-          sudo ./make_all.sh pyra-stable.img 4G pyra-meta-mate
+          sudo -E ./make_all.sh pyra-stable.img 4G pyra-meta-mate
 
       - name: Upload Artifact
         if: ${{ success() }}
@@ -85,7 +85,6 @@ jobs:
         env:
           OS: testing
         run: |
-          sudo update-binfmts --import qemu-arm 
           echo "OS=testing" >> $GITHUB_ENV
           sudo -E ./make_all.sh pyra-testing.img 4G pyra-meta-base
 
