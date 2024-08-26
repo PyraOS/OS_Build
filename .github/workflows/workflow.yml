@@ -27,7 +27,6 @@ jobs:
           debootstrap \
           systemd-container \
           pv \
-          qemu \ 
           qemu-user-static \
           binfmt-support \
           initramfs-tools-core \
