@@ -32,13 +32,13 @@ jobs:
           initramfs-tools-core \
           curl \
           zstd \
-          fdisk
+          fdisk \
+          update-binfmts --import qemu-arm 
       
       - name: Run Makeimg
         env:
           OS: bookworm
         run: |
-          sudo update-binfmts --import qemu-arm 
           echo "OS=boomworm" >> $GITHUB_ENV
           sudo -E ./make_all.sh pyra-stable.img 4G pyra-meta-mate
 
