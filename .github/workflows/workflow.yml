@@ -59,7 +59,11 @@ jobs:
           OS: bookworm
         run: |
           echo "OS=boomworm" >> $GITHUB_ENV
-          sudo -E ./make_all.sh pyra-stable.img 4G pyra-meta-mate
+          docker run --rm --platform linux/arm/v7 \
+            -v ${{ github.workspace }}:/workspace \
+            -w /workspace \
+            wally4000/pyrabuild:latest \
+            ./make_all.sh pyra-stable.img 4G pyra-meta-mate
 
       - name: Upload Artifact
         if: ${{ success() }}
