@@ -39,6 +39,7 @@ jobs:
           pv \
           curl \
           zstd \
+          binfmt-support \
           debootstrap \
           qemu-user-static \
           systemd-container \
