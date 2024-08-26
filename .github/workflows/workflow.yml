@@ -37,22 +37,22 @@ jobs:
         run: |
           docker run --rm --platform linux/arm/v7 wally4000/pyrabuild:latest
 
-      - name: Fetch apt repo
-        run: | 
-          sudo apt-get update
-          sudo apt-get install -y \
-          f2fs-tools \
-          util-linux \
-          git \
-          debootstrap \
-          systemd-container \
-          pv \
-          qemu-user-static \
-          binfmt-support \
-          initramfs-tools-core \
-          curl \
-          zstd \
-          fdisk 
+      # - name: Fetch apt repo
+      #   run: | 
+      #     sudo apt-get update
+      #     sudo apt-get install -y \
+      #     f2fs-tools \
+      #     util-linux \
+      #     git \
+      #     debootstrap \
+      #     systemd-container \
+      #     pv \
+      #     qemu-user-static \
+      #     binfmt-support \
+      #     initramfs-tools-core \
+      #     curl \
+      #     zstd \
+      #     fdisk 
       
       - name: Run Makeimg
         env:
