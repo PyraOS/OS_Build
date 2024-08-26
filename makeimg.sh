@@ -98,7 +98,7 @@ mkdir -p "${ROOTFS}"/usr/share/keyrings
 
 echo "Setup Keyrings and debootstrap"
 ## Need 
-if [ "$OS" != "unstable" ]; then
+if [ "$OS" != "unstable" ] || [ "$OS" != "testing" ]; then
 curl -ffSL https://ftp-master.debian.org/keys/archive-key-$OS_VERSION.asc | sudo gpg --dearmor -o "${DATA}/keyrings/debian-archive-keyring-$OS_VERSION.gpg"
 debootstrap --cache-dir="${DATA}"/cache/debootstrap --arch=armhf --keyring="${DATA}"/keyrings/debian-archive-keyring-$OS_VERSION.gpg --include=eatmydata,ca-certificates  "${OS}" "${ROOTFS}" http://deb.debian.org/debian
 else
@@ -120,7 +120,7 @@ EOF
 ``
 
 #No security repo in Testing or Unstable.
-if [ "OS" != "unstable" ] || [ "$OS" != "testing" ]; then
+if [ $OS = "bookworm" ]; then
 
 cat << EOF >> "${ROOTFS}"/etc/apt/sources.list
 
