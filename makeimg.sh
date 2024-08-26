@@ -121,7 +121,7 @@ EOF
 ``
 
 #No security repo in Testing or Unstable.
-if [ ! "OS" == "unstable" || ! "$OS" == "testing" ]; then
+if [ "OS" != "unstable" ] || [ "$OS" != "testing" ]; then
 
 cat << EOF >> "${ROOTFS}"/etc/apt/sources.list
 

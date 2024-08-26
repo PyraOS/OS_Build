@@ -130,7 +130,6 @@ jobs:
         env:
           OS: sid
         run: |
-          sudo update-binfmts --import qemu-arm 
           echo "OS=sid" >> $GITHUB_ENV
           sudo -E ./make_all.sh pyra-sid.img 4G pyra-meta-base
       - name: Upload Artifact
