@@ -12,12 +12,18 @@ jobs:
 
   stable:
     runs-on: ubuntu-24.04
-    container:  wally4000/pyrabuilder:latest
     
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Set up QEMU for multi-platform builds
+        uses: docker/setup-qemu-action@v2
       
+      - name: Run ARMv7 Docker image
+        run: |
+          docker run --rm wally4000/armv7:latest
+
       - name: Fetch apt repo
         run: | 
           sudo apt-get update
