@@ -32,7 +32,7 @@ jobs:
           initramfs-tools-core \
           curl \
           zstd \
-          fdisk \
+          fdisk 
           sudo update-binfmts --import qemu-arm 
       
       - name: Run Makeimg
