@@ -133,7 +133,7 @@ fi
 
 # Pyra Packages Repo(s)
 cat << EOF >> "${ROOTFS}"/etc/apt/sources.list.d/pyra-packages.list
-deb [arch=armhf signed-by=/usr/share/keyrings/pyra-public.gpg] http://slater.au/pyra $OS main
+deb [arch=armhf signed-by=/usr/share/keyrings/pyra-public.gpg] http://slater.au/ $OS 
 EOF
 
 echo "Copy config and settings to rootfs for execution later"
