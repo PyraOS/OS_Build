@@ -16,8 +16,10 @@ RUN apt-get update && \
 
 RUN git config --global http.sslverify false
 
-RUN git clone https://github.com/wally4000/PyraBuild /home/PyraBuild
+RUN git clone https://github.com/PyraOS/OS_Build
 
-WORKDIR /home/PyraBuild
+
+WORKDIR /home/PyraBuild/OS_Build
 # Entry point (you can change this to run your specific tests or scripts)
 ENTRYPOINT ["/bin/bash"]
+
