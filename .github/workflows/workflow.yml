@@ -9,7 +9,10 @@ on:
   workflow_dispatch:
 
 jobs:
-
+  run-container: 
+    runs-on: ubuntu-latest
+    steps:
+    - name: Set
   stable:
     runs-on: ubuntu-24.04
 
@@ -27,18 +30,19 @@ jobs:
           debootstrap \
           systemd-container \
           pv \
+          qemu \ 
           qemu-user-static \
           binfmt-support \
           initramfs-tools-core \
           curl \
           zstd \
-          qemu-system-arm \
           fdisk
       
       - name: Run Makeimg
         env:
           OS: bookworm
         run: |
+          sudo update-binfmts --import qemu-arm 
           echo "OS=boomworm" >> $GITHUB_ENV
           sudo -E ./make_all.sh pyra-stable.img 4G pyra-meta-mate
 
@@ -77,6 +81,7 @@ jobs:
         env:
           OS: testing
         run: |
+          sudo update-binfmts --import qemu-arm 
           echo "OS=testing" >> $GITHUB_ENV
           sudo -E ./make_all.sh pyra-testing.img 4G pyra-meta-base
 
@@ -115,6 +120,7 @@ jobs:
         env:
           OS: sid
         run: |
+          sudo update-binfmts --import qemu-arm 
           echo "OS=sid" >> $GITHUB_ENV
           sudo -E ./make_all.sh pyra-sid.img 4G pyra-meta-base
       - name: Upload Artifact
