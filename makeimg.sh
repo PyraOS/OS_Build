@@ -91,7 +91,7 @@ dd if="${DATA}"/uboot/MLO of="$LOOPDEV" count=1 seek=1 bs=128k conv=notrunc
 dd if="${DATA}"/uboot/u-boot.img of="$LOOPDEV" count=2 seek=1 bs=384k conv=notrunc
 
 # Setup the Filesystem on partitions and mount
-mke2fs  -L boot "$PART_BOOT"
+mkfs.ext4  -L boot "$PART_BOOT"
 mkfs.ext4  -O encrypt -L rootfs "$PART_ROOTFS"
 
 ROOTFS=/tmp/ROOTFS

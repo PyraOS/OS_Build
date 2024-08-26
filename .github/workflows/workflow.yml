@@ -29,41 +29,26 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build ARMv7 Docker image
-        run: |
-          docker buildx build --platform linux/arm/v7 -t wally4000/pyrabuild:latest --push .
-
-      - name: Run ARMv7 Docker image
-        run: |
-          docker run --rm --platform linux/arm/v7 wally4000/pyrabuild:latest
-
-      # - name: Fetch apt repo
-      #   run: | 
-      #     sudo apt-get update
-      #     sudo apt-get install -y \
-      #     f2fs-tools \
-      #     util-linux \
-      #     git \
-      #     debootstrap \
-      #     systemd-container \
-      #     pv \
-      #     qemu-user-static \
-      #     binfmt-support \
-      #     initramfs-tools-core \
-      #     curl \
-      #     zstd \
-      #     fdisk 
+     - name: Fetch apt repo
+        run: | 
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+          f2fs-tools \
+          util-linux \
+          git \
+          pv \
+          curl \
+          zstd \
+          debootstrap \
+          qemu-user-static \
+          fdisk
       
       - name: Run Makeimg
         env:
           OS: bookworm
         run: |
           echo "OS=boomworm" >> $GITHUB_ENV
-          docker run --rm --privileged --platform linux/arm/v7 \
-            -v ${{ github.workspace }}:/workspace \
-            -w /workspace \
-            wally4000/pyrabuild:latest \
-            ./make_all.sh pyra-stable.img 4G pyra-meta-mate
+          ./make_all.sh pyra-stable.img 4G pyra-meta-mate
 
       - name: Upload Artifact
         if: ${{ success() }}
