@@ -33,7 +33,9 @@ jobs:
           curl \
           zstd \
           fdisk 
-          sudo update-binfmts --import qemu-arm 
+
+      - name: Run binfmt update
+        run: update-binfmts --enable qemu-arm
       
       - name: Run Makeimg
         env:
