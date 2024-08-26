@@ -23,35 +23,8 @@ IMAGENAME="$1"
 IMAGESIZE="$2"
 
 #Bullseye and beyond supported, we need the OS version to automate detection for testing and SID. OS version beyond 30 will trigger testing and unstable.
-case $OS in 
-
-bullseye)
-##oldstable
-OS_VERSION=11
-;;
-bookworm)
-#stable
-OS_VERSION=12
-;;
-trixie)
-#testing
-OS_VERSION=13
-;;
-sid)
-#unstable
-OS_VERSION=99
-;;
-default)
-## Default to stable
-OS=bookworm
-OS_VERSION=12
-exit
-;;
-
-esac
 
 echo "OS Name: ${OS}"
-echo "OS Version: ${OS_VERSION}"
 
 shift
 shift
@@ -98,8 +71,9 @@ mkdir -p "${ROOTFS}"/usr/share/keyrings
 
 echo "Setup Keyrings and debootstrap"
 
-curl -ffSL https://ftp-master.debian.org/keys/archive-key-$OS_VERSION.asc | sudo gpg --dearmor -o "${DATA}/keyrings/debian-archive-keyring-$OS_VERSION.gpg"
-debootstrap --cache-dir="${DATA}"/cache/debootstrap --arch=armhf --keyring="${DATA}"/keyrings/debian-archive-keyring-$OS_VERSION.gpg --include=eatmydata,ca-certificates  "${OS}" "${ROOTFS}" http://deb.debian.org/debian
+# the archive key needs to be updated every so often Perhaps script in the latest one 
+curl -ffSL https://ftp-master.debian.org/keys/archive-key-12.asc | sudo gpg --dearmor -o "${DATA}/keyrings/debian-archive-keyring-12.gpg"
+debootstrap --cache-dir="${DATA}"/cache/debootstrap --arch=armhf --keyring="${DATA}"/keyrings/debian-archive-keyring-12.gpg --include=eatmydata,ca-certificates  "${OS}" "${ROOTFS}" http://deb.debian.org/debian
 
 #Fetch the Pyra key, convert it to gpg (see apt-key deprecation)
 
