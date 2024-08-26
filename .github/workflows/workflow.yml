@@ -41,9 +41,9 @@ jobs:
       
       - name: Run Makeimg
         env:
-          OS: bookworm
+          OS: stable
         run: |
-          echo "OS=boomworm" >> $GITHUB_ENV
+          echo "OS=stable" >> $GITHUB_ENV
           sudo -E ./make_all.sh pyra-stable.img 4G pyra-meta-mate
 
       - name: Upload Artifact
