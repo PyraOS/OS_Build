@@ -35,7 +35,7 @@ jobs:
           fdisk 
 
       - name: Run binfmt update
-        run: update-binfmts --enable qemu-arm
+        run: sudo update-binfmts --enable qemu-arm
       
       - name: Run Makeimg
         env:
