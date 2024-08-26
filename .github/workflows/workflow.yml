@@ -12,6 +12,7 @@ jobs:
 
   stable:
     runs-on: ubuntu-24.04
+    container:  wally4000/armv7:latest
 
     steps:
       - name: Checkout code
@@ -33,11 +34,6 @@ jobs:
           curl \
           zstd \
           fdisk 
-
-      - name: Run binfmt update
-        run: | 
-            sudo update-binfmts --import /usr/bin/qemu-arm-static
-            ls /proc/sys/fs/binfmt_misc
       
       - name: Run Makeimg
         env:
