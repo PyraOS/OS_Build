@@ -35,7 +35,7 @@ jobs:
 
       - name: Run ARMv7 Docker image
         run: |
-          docker run --rm wally4000/pyrabuild:latest
+          docker run --rm --platform linux/arm/v7 wally4000/pyrabuild:latest
 
       - name: Fetch apt repo
         run: | 
