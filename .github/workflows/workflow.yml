@@ -66,7 +66,6 @@ jobs:
       - name: Set up QEMU for multi-platform builds
         uses: docker/setup-qemu-action@v2
 
-      
       - name: Fetch apt repo
         run: | 
           sudo apt-get update
