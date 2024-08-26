@@ -80,16 +80,16 @@ debootstrap --cache-dir="${DATA}"/cache/debootstrap --arch=armhf --keyring="${DA
 # curl -fsSL https://packages.pyra-handheld.com/pyra-public.pgp | sudo gpg --dearmor -o "${ROOTFS}"/usr/share/keyrings/pyra-public.gpg
 curl -fsSL http://slater.au/pyra/pyra.gpg | sudo gpg --dearmor -o "${ROOTFS}"/usr/share/keyrings/pyra-public.gpg       
  
-echo "Setup Source Repos"
+echo "Setup Source Repos for $OS"
 
 cat << EOF > "${ROOTFS}"/etc/apt/sources.list
 #Debian $OS
 deb http://deb.debian.org/debian/ $OS main contrib non-free non-free-firmware
 deb-src http://deb.debian.org/debian/ $OS main contrib non-free non-free-firmware
 EOF
-``
 
-#No security repo in Testing or Unstable.
+
+#If stable - include security repos
 if [ $OS = "bookworm" ]; then
 
 cat << EOF >> "${ROOTFS}"/etc/apt/sources.list
@@ -100,7 +100,7 @@ deb-src http://security.debian.org/debian-security $OS-security main
 EOF
 fi 
 
-# Pyra Packages Repo(s)
+echo Pyra Package Repo for $OS
 cat << EOF >> "${ROOTFS}"/etc/apt/sources.list.d/pyra-packages.list
 deb [arch=armhf signed-by=/usr/share/keyrings/pyra-public.gpg] http://slater.au/ $OS/
 EOF
@@ -126,7 +126,7 @@ cat > "${ROOTFS}"/etc/fstab << EOF
 #
 # / was f2fs initially
 # <file system> <mount point>   <type>  <options>       <dump>  <pass>
-PARTUUID=${ROOTPARTUUID}  /               ext2    defaults        0       1
+PARTUUID=${ROOTPARTUUID}  /               ext4    defaults        0       1
 PARTUUID=${BOOTPARTUUID}  /boot           ext4    defaults        0       1
 
 EOF
