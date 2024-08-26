@@ -41,6 +41,7 @@ jobs:
           zstd \
           debootstrap \
           qemu-user-static \
+          systemd-container \
           fdisk
       
       - name: Run Makeimg
