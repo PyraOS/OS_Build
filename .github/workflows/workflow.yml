@@ -31,11 +31,11 @@ jobs:
 
       - name: Build ARMv7 Docker image
         run: |
-          docker buildx build --platform linux/arm/v7 -t wally4000/armv7:latest --push .
+          docker buildx build --platform linux/arm/v7 -t pyrabuild/armv7:latest --push .
 
       - name: Run ARMv7 Docker image
         run: |
-          docker run --rm wally4000/armv7:latest
+          docker run --rm pyrabuild/armv7:latest
 
       - name: Fetch apt repo
         run: | 
