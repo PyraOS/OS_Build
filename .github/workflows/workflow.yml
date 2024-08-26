@@ -50,7 +50,7 @@ jobs:
         if: ${{ success() }}
         uses: actions/upload-artifact@v4
         with:
-          name: PyraOS SD Installer (Stable)
+          name: PyraOS SD Installer (Stable - Bookworm)
           path: pyra-stable-install.img
 
   testing:
@@ -97,7 +97,7 @@ jobs:
           name: PyraOS SD Installer (Testing)
           path: pyra-testing-install.img
 
-  sid:
+  unstable:
     runs-on: ubuntu-24.04
 
     steps:
@@ -128,13 +128,13 @@ jobs:
       
       - name: Run Makeimg
         env:
-          OS: sid
+          OS: unstable
         run: |
-          echo "OS=sid" >> $GITHUB_ENV
+          echo "OS=unstable" >> $GITHUB_ENV
           sudo -E ./make_all.sh pyra-sid.img 4G pyra-meta-base
       - name: Upload Artifact
         if: ${{ success() }}
         uses: actions/upload-artifact@v4
         with:
-          name: PyraOS SD Installer (Sid)
+          name: PyraOS SD Installer (Unstable)
           path: pyra-sid-install.img
