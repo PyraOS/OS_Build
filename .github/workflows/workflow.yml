@@ -31,7 +31,7 @@ jobs:
 
       - name: Build ARMv7 Docker image
         run: |
-          docker buildx build --platform linux/arm/v7 -t wally4000/armv7:latest .
+          docker buildx build --platform linux/arm/v7 -t wally4000/armv7:latest --push .
 
       - name: Run ARMv7 Docker image
         run: |
