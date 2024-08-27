@@ -25,6 +25,7 @@ IMAGESIZE="$2"
 #Bullseye and beyond supported, we need the OS version to automate detection for testing and SID. OS version beyond 30 will trigger testing and unstable.
 
 echo "OS Name: ${OS}"
+echo "Current Dir: $PWD"
 
 shift
 shift
@@ -154,7 +155,7 @@ docker buildx build --platform linux/armhf \
   -t wally4000/pyra-$OS:latest \
   -<<EOF
 FROM scratch
-COPY ${DATA}/installer/out/ /
+COPY "${DATA}"/installer/out/ /
 EOF
 
 #Remove cached output.
