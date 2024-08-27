@@ -147,6 +147,16 @@ rm "${ROOTFS}"/settings.debconf
 # Tar Image
 tar cvf "${IMAGENAME}".installer.tar -C "${DATA}"/installer/out/ .
 
+# Build Docker Image
+docker buildx build --platform linux/armhf \
+  --build-arg BUILDKIT_INLINE_CACHE=1 \
+  --output=type=docker \
+  -t wally4000/pyra-$OS:latest \
+  -<<EOF
+FROM scratch
+COPY ${DATA}/installer/out/ /
+EOF
+
 #Remove cached output.
 rm "${DATA}"/installer/out -rf
 rm "${ROOTFS}"/installer -rf
