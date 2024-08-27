@@ -10,7 +10,7 @@ on:
 
 jobs:
 
-oldstable:
+  oldstable:
     runs-on: ubuntu-24.04
     
     steps:
@@ -52,7 +52,7 @@ oldstable:
         with:
           name: PyraOS SD Installer (oldstable - Bullseye)
           path: pyra-oldstable-install.img
-          
+
   stable:
     runs-on: ubuntu-24.04
     
