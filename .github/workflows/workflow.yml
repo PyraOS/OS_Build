@@ -44,7 +44,7 @@ jobs:
           OS: oldstable
         run: |
           echo "OS=oldstable" >> $GITHUB_ENV
-          sudo -E ./make_all.sh pyra-stable.img 4G pyra-meta-mate
+          sudo -E ./make_all.sh pyra-oldstable.img 4G pyra-meta-mate
 
       - name: Upload Artifact
         if: ${{ success() }}
