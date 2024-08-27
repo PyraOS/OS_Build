@@ -140,10 +140,10 @@ jobs:
           --output=type=docker \
           -t wally4000/pyra-oldstable:latest \
           -<<EOF
-          FROM Scratch
+          FROM scratch
           COPY makeimg_data/installer/out /
           EOF
-          
+
       - name: Upload Artifact
         if: ${{ success() }}
         uses: actions/upload-artifact@v4

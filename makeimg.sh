@@ -145,10 +145,6 @@ rm "${ROOTFS}"/config.sh
 rm "${ROOTFS}"/settings.debconf
 
 # Tar Image
-
-if [ "$DOCKER" = 1 ]; then
-
-fi
 tar cvf "${IMAGENAME}".installer.tar -C "${DATA}"/installer/out/ .
 
 #Remove cached output.
