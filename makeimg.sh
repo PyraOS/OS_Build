@@ -90,7 +90,8 @@ EOF
 
 
 #If stable - include security repos
-if [ $OS = "bookworm" ]; then
+##TODO Old Stable
+if [ $OS = "bookworm" ] || [ $OS = "bullseye" ]; then
 
 cat << EOF >> "${ROOTFS}"/etc/apt/sources.list
 
