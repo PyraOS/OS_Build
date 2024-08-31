@@ -24,6 +24,8 @@ IMAGESIZE="$2"
 
 #Bullseye and beyond supported, we need the OS version to automate detection for testing and SID. OS version beyond 30 will trigger testing and unstable.
 
+if [ -z $OS ] ; then echo \$OS undefined; exit -1; fi 
+
 echo "OS Name: ${OS}"
 echo "Current Dir: $PWD"
 
