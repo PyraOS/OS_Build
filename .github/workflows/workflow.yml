@@ -40,17 +40,17 @@ jobs:
           fdisk \
           gcc-arm-linux-gnueabihf
 
-      - name:  Build Uboot
-        env:
-          OS: bullseye
-        run: | 
-          echo "OS=bullseye" >> $GITHUB_ENV
-          git clone --branch $OS --single-branch https://dev.pyra-handheld.com/packages/pyra-uboot && cd pyra-uboot
-          make -j"$num_cpus" ARCH=arm CROSS_COMPILE="arm-linux-gnueabihf-" omap5_pyra_4gb_defconfig
-          make -j"$num_cpus" ARCH=arm CROSS_COMPILE="arm-linux-gnueabihf-"
-          cp u-boot.img ../makeimg_data/uboot/u-boot.img
-          cp MLO ../makeimg_data/uboot/MLO
-          tar -cvf ../uboot_bullseye.tar u-boot.img MLO
+      # - name:  Build Uboot
+      #   env:
+      #     OS: bullseye
+      #   run: | 
+      #     echo "OS=bullseye" >> $GITHUB_ENV
+      #     git clone --branch $OS --single-branch https://dev.pyra-handheld.com/packages/pyra-uboot && cd pyra-uboot
+      #     make -j"$num_cpus" ARCH=arm CROSS_COMPILE="arm-linux-gnueabihf-" omap5_pyra_4gb_defconfig
+      #     make -j"$num_cpus" ARCH=arm CROSS_COMPILE="arm-linux-gnueabihf-"
+      #     cp u-boot.img ../makeimg_data/uboot/u-boot.img
+      #     cp MLO ../makeimg_data/uboot/MLO
+      #     tar -cvf ../uboot_bullseye.tar u-boot.img MLO
 
       - name: Run Makeimg
         env:
@@ -66,12 +66,12 @@ jobs:
           name: PyraOS SD Installer (oldstable - Bullseye)
           path: pyra-oldstable-install.img
 
-      - name: Upload Artifact
-        if: ${{ success() }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: Uboot (oldstable - Bullseye)
-          path: uboot_bullseye.tar
+      # - name: Upload Artifact
+      #   if: ${{ success() }}
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: Uboot (oldstable - Bullseye)
+      #     path: uboot_bullseye.tar
 
   stable:
     runs-on: ubuntu-24.04
