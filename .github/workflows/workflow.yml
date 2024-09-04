@@ -179,7 +179,7 @@ jobs:
           OS: testing
         run: |
           echo "OS=testing" >> $GITHUB_ENV
-          sudo -E ./make_all.sh pyra-testing.img 4G libz
+          sudo -E ./make_all.sh pyra-testing.img 4G linux-image-pyra
 
       - name: Upload Artifact
         if: ${{ success() }}
@@ -222,7 +222,7 @@ jobs:
           OS: unstable
         run: |
           echo "OS=unstable" >> $GITHUB_ENV
-          sudo -E ./make_all.sh pyra-sid.img 4G libz
+          sudo -E ./make_all.sh pyra-sid.img 4G linux-image-pyra
       - name: Upload Artifact
         if: ${{ success() }}
         uses: actions/upload-artifact@v4
