@@ -37,8 +37,19 @@ jobs:
           debootstrap \
           qemu-user-static \
           systemd-container \
-          fdisk
-      
+          fdisk \
+          gcc-arm-linux-gnueabihf
+      - name:  Build Uboot
+        env:
+          OS: bullseye
+            run: | 
+          echo "OS=bullseye" >> $GITHUB_ENV
+          git clone --branch $OS --single-branch https://dev.pyra-handheld.com/packages/pyra-uboot && cd pyra-uboot
+          make -j"$num_cpus" ARCH=arm CROSS_COMPILE="arm-linux-gnueabihf-" omap5_pyra_4gb_defconfig
+          make -j"$num_cpus" ARCH=arm CROSS_COMPILE="arm-linux-gnueabihf-"
+          cp u-boot.img ../makeimg_data/uboot/u-boot.img
+          cp MLO ../makeimg_data/uboot/MLO
+
       - name: Run Makeimg
         env:
           OS: oldstable
@@ -80,8 +91,19 @@ jobs:
           debootstrap \
           qemu-user-static \
           systemd-container \
-          fdisk
-      
+          fdisk \
+          gcc-arm-linux-gnueabihf
+      - name:  Build Uboot
+      env:
+        OS: bookworm
+        run: | 
+          echo "OS=bookworm" >> $GITHUB_ENV
+          git clone --branch $OS --single-branch https://dev.pyra-handheld.com/packages/pyra-uboot && cd pyra-uboot
+          make -j"$num_cpus" ARCH=arm CROSS_COMPILE="arm-linux-gnueabihf-" omap5_pyra_4gb_defconfig
+          make -j"$num_cpus" ARCH=arm CROSS_COMPILE="arm-linux-gnueabihf-"
+          cp u-boot.img ../makeimg_data/uboot/u-boot.img
+          cp MLO ../makeimg_data/uboot/MLO
+
       - name: Run Makeimg
         env:
           OS: bookworm
