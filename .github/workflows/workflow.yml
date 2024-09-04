@@ -103,8 +103,8 @@ jobs:
           fdisk \
           gcc-arm-linux-gnueabihf
       - name:  Build Uboot
-      env:
-        OS: bookworm
+        env:
+          OS: bookworm
         run: | 
           echo "OS=bookworm" >> $GITHUB_ENV
           git clone --branch $OS --single-branch https://dev.pyra-handheld.com/packages/pyra-uboot && cd pyra-uboot
