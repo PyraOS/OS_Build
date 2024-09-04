@@ -144,88 +144,88 @@ jobs:
 
           
 
-  # testing:
-  #   runs-on: ubuntu-24.04
+  testing:
+    runs-on: ubuntu-24.04
 
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v4
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-  #     - name: Set up Docker Buildx
-  #       uses: docker/setup-buildx-action@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
 
-  #     - name: Set up QEMU for multi-platform builds
-  #       uses: docker/setup-qemu-action@v2
+      - name: Set up QEMU for multi-platform builds
+        uses: docker/setup-qemu-action@v2
 
       
-  #     - name: Fetch apt repo
-  #       run: | 
-  #         sudo apt-get update
-  #         sudo apt-get install -y --no-install-recommends \
-  #         f2fs-tools \
-  #         util-linux \
-  #         git \
-  #         pv \
-  #         curl \
-  #         zstd \
-  #         binfmt-support \
-  #         debootstrap \
-  #         qemu-user-static \
-  #         systemd-container \
-  #         fdisk
+      - name: Fetch apt repo
+        run: | 
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+          f2fs-tools \
+          util-linux \
+          git \
+          pv \
+          curl \
+          zstd \
+          binfmt-support \
+          debootstrap \
+          qemu-user-static \
+          systemd-container \
+          fdisk
       
-  #     - name: Run Makeimg
-  #       env:
-  #         OS: testing
-  #       run: |
-  #         echo "OS=testing" >> $GITHUB_ENV
-  #         sudo -E ./make_all.sh pyra-testing.img 4G pyra-meta-base
+      - name: Run Makeimg
+        env:
+          OS: testing
+        run: |
+          echo "OS=testing" >> $GITHUB_ENV
+          sudo -E ./make_all.sh pyra-testing.img 4G libz
 
-  #     - name: Upload Artifact
-  #       if: ${{ success() }}
-  #       uses: actions/upload-artifact@v4
-  #       with:
-  #         name: PyraOS SD Installer (Testing)
-  #         path: pyra-testing-install.img
+      - name: Upload Artifact
+        if: ${{ success() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: PyraOS SD Installer (Testing)
+          path: pyra-testing-install.img
 
-  # unstable:
-  #   runs-on: ubuntu-24.04
+  unstable:
+    runs-on: ubuntu-24.04
 
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v4
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-  #     - name: Set up Docker Buildx
-  #       uses: docker/setup-buildx-action@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
 
-  #     - name: Set up QEMU for multi-platform builds
-  #       uses: docker/setup-qemu-action@v2
+      - name: Set up QEMU for multi-platform builds
+        uses: docker/setup-qemu-action@v2
 
-  #     - name: Fetch apt repo
-  #       run: | 
-  #         sudo apt-get update
-  #         sudo apt-get install -y --no-install-recommends \
-  #         f2fs-tools \
-  #         util-linux \
-  #         git \
-  #         pv \
-  #         curl \
-  #         zstd \
-  #         binfmt-support \
-  #         debootstrap \
-  #         qemu-user-static \
-  #         systemd-container \
-  #         fdisk
+      - name: Fetch apt repo
+        run: | 
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+          f2fs-tools \
+          util-linux \
+          git \
+          pv \
+          curl \
+          zstd \
+          binfmt-support \
+          debootstrap \
+          qemu-user-static \
+          systemd-container \
+          fdisk
       
-  #     - name: Run Makeimg
-  #       env:
-  #         OS: unstable
-  #       run: |
-  #         echo "OS=unstable" >> $GITHUB_ENV
-  #         sudo -E ./make_all.sh pyra-sid.img 4G pyra-meta-base
-  #     - name: Upload Artifact
-  #       if: ${{ success() }}
-  #       uses: actions/upload-artifact@v4
-  #       with:
-  #         name: PyraOS SD Installer (Unstable)
-  #         path: pyra-sid-install.img
+      - name: Run Makeimg
+        env:
+          OS: unstable
+        run: |
+          echo "OS=unstable" >> $GITHUB_ENV
+          sudo -E ./make_all.sh pyra-sid.img 4G libz
+      - name: Upload Artifact
+        if: ${{ success() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: PyraOS SD Installer (Unstable)
+          path: pyra-sid-install.img
