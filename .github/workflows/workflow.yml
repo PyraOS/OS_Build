@@ -50,7 +50,7 @@ jobs:
           make -j"$num_cpus" ARCH=arm CROSS_COMPILE="arm-linux-gnueabihf-"
           cp u-boot.img ../makeimg_data/uboot/u-boot.img
           cp MLO ../makeimg_data/uboot/MLO
-          tar -xvf ../uboot_bullseye.tar -C uboot.img MLO
+          tar -cvf ../uboot_bullseye.tar -C uboot.img MLO
 
       - name: Run Makeimg
         env:
@@ -112,7 +112,7 @@ jobs:
           make -j"$num_cpus" ARCH=arm CROSS_COMPILE="arm-linux-gnueabihf-"
           cp u-boot.img ../makeimg_data/uboot/u-boot.img
           cp MLO ../makeimg_data/uboot/MLO
-          tar -xvf ../uboot_bookworm.tar -C uboot.img MLO
+          tar -cvf ../uboot_bookworm.tar -C uboot.img MLO
 
       - name: Run Makeimg
         env:
