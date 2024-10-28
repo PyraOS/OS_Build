@@ -16,6 +16,32 @@ eatmydata apt -o APT::Keep-Downloaded-Packages="true" upgrade -y
 #eatmydata apt -o APT::Install-Recommends="false" -o APT::Keep-Downloaded-Packages="true" install -y $@
 eatmydata apt -o APT::Keep-Downloaded-Packages="true" install -y $@
 
+
+#Install Community Patches 
+#TODO: Fetch from Git Repo?
+echo "Applying Community Patches" 
+
+target_dir="Additional_Scripts"
+
+# Check if the target directory exists
+if [ -d "Additional_Scripts" ]; then
+    for dir in "$target_dir"/* ; do
+        for script in "$dir"/*.sh; do
+            if [ -f "$script" ]; then
+                echo "Running $script..."
+                bash "$script"  # Execute the script
+            else
+                echo "No .sh files found in $dir."
+            fi
+        done
+    done
+else
+    echo "Directory $target_dir does not exist."
+fi
+
+
+
+
 mkdir -p /boot/dtb
 
 linux-version list | while read -r version

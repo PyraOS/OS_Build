@@ -85,8 +85,8 @@ debootstrap --cache-dir="${DATA}"/cache/debootstrap --arch=armhf --keyring="${DA
 
 #Fetch the Pyra key, convert it to gpg (see apt-key deprecation)
 
-# curl -fsSL https://packages.pyra-handheld.com/pyra-public.pgp | sudo gpg --dearmor -o "${ROOTFS}"/usr/share/keyrings/pyra-public.gpg
-curl -fsSL http://slater.au/pyra/pyra.gpg | sudo gpg --dearmor -o "${ROOTFS}"/usr/share/keyrings/pyra-public.gpg       
+curl -fsSL https://packages.pyra-handheld.com/pyra-public.pgp | sudo gpg --dearmor -o "${ROOTFS}"/usr/share/keyrings/pyra-public.gpg
+# curl -fsSL http://slater.au/pyra/pyra.gpg | sudo gpg --dearmor -o "${ROOTFS}"/usr/share/keyrings/pyra-public.gpg       
  
 echo "Setup Source Repos for $OS"
 
@@ -111,7 +111,8 @@ fi
 
 echo Pyra Package Repo for $OS
 cat << EOF >> "${ROOTFS}"/etc/apt/sources.list.d/pyra-packages.list
-deb [arch=armhf signed-by=/usr/share/keyrings/pyra-public.gpg] http://slater.au/ $OS/
+# deb [arch=armhf signed-by=/usr/share/keyrings/pyra-public.gpg] http://slater.au/ $OS/
+deb [arch=armhf signed-by=/usr/share/keyrings/pyra-public.gpg] http://packages.pyra-handheld.com $OS/
 EOF
 
 echo "Copy config and settings to rootfs for execution later"
