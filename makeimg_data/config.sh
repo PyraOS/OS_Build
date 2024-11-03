@@ -18,29 +18,38 @@ eatmydata apt -o APT::Keep-Downloaded-Packages="true" install -y $@
 
 
 #Install Community Patches 
-#TODO: Fetch from Git Repo?
+
 echo "Applying Community Patches" 
+
+git clone "https://github.com/PyraOS/Additional_Scripts"
 
 target_dir="Additional_Scripts"
 
 # Check if the target directory exists
-if [ -d "Additional_Scripts" ]; then
-    for dir in "$target_dir"/* ; do
-        for script in "$dir"/*.sh; do
-            if [ -f "$script" ]; then
-                echo "Running $script..."
-                bash "$script"  # Execute the script
-            else
-                echo "No .sh files found in $dir."
-            fi
-        done
+if [ -d "$target_dir" ]; then
+    # Unzip all zip files inside the target directory, ignoring __MACOSX
+    for zip in "$target_dir"/*.zip; do
+        if [ -f "$zip" ]; then
+            unzip "$zip" -d "$target_dir"
+            # Remove any __MACOSX directory if it exists
+            rm -rf "$target_dir"/__MACOSX
+        else
+            echo "No zip files found in $target_dir."
+        fi
+    done
+
+    # Find and execute all .sh scripts in the target directory and its subdirectories, ignoring __MACOSX
+    find "$target_dir" -type f -name "*.sh" | while read -r script; do
+        if [ -f "$script" ]; then
+            echo "Running $script..."
+            bash "$script"  # Execute the script
+        else
+            echo "No .sh files found."
+        fi
     done
 else
     echo "Directory $target_dir does not exist."
 fi
-
-
-
 
 mkdir -p /boot/dtb
 
